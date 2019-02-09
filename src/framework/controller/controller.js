@@ -1,4 +1,5 @@
 import View from "../view/view";
+import Model from "../../model/model";
 
 export default class Controller {
     constructor(app){
@@ -8,21 +9,22 @@ export default class Controller {
     }
 
     setup(){
+        this.createModel();
         this.createView();
     }
 
+    createModel(){
+        this._model = new Model();
+    }
+
     createView(){
-        this._view = new View();
+        this._view = new View(this._app, this._model);
         this._app.stage.addChild(this._view);
     }
 
     handleResize(){
-        // let ratio = Math.min(960 / this._app.renderer.width, 960 / this._app.renderer.height);
-        // this._view.scale.x = this._view.scale.y = ratio;
-
-        // renderer.resize(Math.ceil(WIDTH * ratio), Math.ceil(HEIGHT * ratio));
-        // console.log(this._app.screen.width, this._app.screen.height);
-        // return;
+        let ratio = this._app.screen.width < this._app.screen.height ? this._app.screen.height / 960 : this._app.screen.width / 960;
+        this._view.scale.x = this._view.scale.y = ratio;
 
         if (this._app.screen.width < this._app.screen.height)
             this.applyLayoutPortrait();
@@ -34,16 +36,12 @@ export default class Controller {
     }
 
     applyLayoutPortrait(){
-        let ratio = this._app.screen.height / 960;
-        this._view.scale.x = this._view.scale.y = ratio;
-
-        console.log('portrait');
+        if (this._view)
+            this._view.applyLayoutPortrait();
     }
 
     applyLayoutLandscape(){
-        let ratio = this._app.screen.width / 960;
-        this._view.scale.x = this._view.scale.y = ratio;
-
-        console.log('landscape');
+        if (this._view)
+            this._view.applyLayoutLandscape();
     }
 }
