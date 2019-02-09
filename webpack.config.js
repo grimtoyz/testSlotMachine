@@ -22,9 +22,7 @@ var pluginsList = {
         }),
         new HtmlWebpackInlinePlugin(),
         new CopyWebpackPlugin([
-            // { from: 'assets/images', to: 'assets/images' },
-            { from: 'config/', to: 'config/' },
-            { from: 'lang/', to: 'lang/' }
+            { from: 'assets/', to: 'assets/' },
         ]),
         new webpack.DefinePlugin({
             PRODUCTION: JSON.stringify(false)
@@ -44,8 +42,7 @@ var pluginsList = {
         }),
         new HtmlWebpackInlinePlugin(),
         new CopyWebpackPlugin([
-            { from: 'config/', to: 'config/' },
-            { from: 'lang/', to: 'lang/' }
+            { from: 'assets/', to: 'assets/' },
         ]),
         new UglifyJSPlugin({
             uglifyOptions: {
@@ -64,8 +61,7 @@ var pluginsList = {
     ]
 
 
-}
-
+};
 
 module.exports = function(env, args) {
     return {
@@ -117,4 +113,4 @@ module.exports = function(env, args) {
             }
             : {}
     }
-}
+};
