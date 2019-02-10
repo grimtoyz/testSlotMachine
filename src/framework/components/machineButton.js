@@ -11,7 +11,7 @@ export default class MachineButton extends PIXI.Sprite{
         this.texture = PIXI.loader.resources["atlas"].textures["spinButton.png"];
     }
 
-    disable(){
-        this.texture = PIXI.loader.resources["atlas"].textures["spinButtonDisabled.png"];
+    changeToStopButton(){
+        this.texture = PIXI.loader.resources["atlas"].textures["stopButton.png"];
     }
 }

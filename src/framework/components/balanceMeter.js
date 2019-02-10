@@ -17,6 +17,6 @@ export default class BalanceMeter extends PIXI.Container{
     }
 
     updateBalance(value){
-        this._text.text = `YOUR BALANCE: ${value}`;
+        this._text.text = `YOUR BALANCE: $${value}`;
     }
 }

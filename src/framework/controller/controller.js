@@ -31,7 +31,7 @@ export default class Controller {
 
     createView(){
         this._view = new View(this._app, this._model);
-        this._view.onMachineButtonTapped(this.onSpinTapped.bind(this));
+        this._view.onMachineButtonTapped(this.onMachineButtonTapped.bind(this));
         this._view.onAllReelsComplete(this.onAllReelsComplete.bind(this));
 
         this._app.stage.addChild(this._view);
@@ -50,8 +50,11 @@ export default class Controller {
         this._view.position.y = this._app.screen.height * 0.5;
     }
 
-    onSpinTapped(){
-        if (this.canSpin()){
+    onMachineButtonTapped(isSpinning){
+        if (isSpinning){
+            this._view.instantStop();
+        }
+        else if (this.canSpin()){
             this._model.balance -= this._model.currentBet;
             this._view.updateBalance(this._model.balance);
 

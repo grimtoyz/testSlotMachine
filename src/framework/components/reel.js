@@ -77,7 +77,18 @@ export default class Reel extends PIXI.Container{
     spin(targetPosition){
         targetPosition += this._model.reels[this._index].length;
 
-        TweenMax.to(this, 2 + this._index, {_currentPosition:`+=${targetPosition}`, onComplete:(function(){
+        // TODO: make sure second roll stops reels at the correct positions
+
+        this._currentTargetPosition = targetPosition;
+        this._spinTween = TweenMax.to(this, 2 + this._index, {_currentPosition:`+=${targetPosition}`, onComplete:(function(){
+                // this._currentPosition = targetPosition%(this._model.reels[this._index].length);
+                this.onSpinComplete();
+            }).bind(this), ease:Sine.easeInOut});
+    }
+
+    instantStop(){
+        this._spinTween.kill();
+        this._spinTween = TweenMax.to(this, 0, {_currentPosition:`+=${ this._currentTargetPosition - this._currentPosition}`, onComplete:(function(){
                 // this._currentPosition = targetPosition%(this._model.reels[this._index].length);
                 this.onSpinComplete();
             }).bind(this), ease:Sine.easeInOut});

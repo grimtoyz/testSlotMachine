@@ -4,6 +4,7 @@ import MachineButton from "../components/machineButton";
 import BalanceMeter from "../components/balanceMeter";
 import Paytable from "../components/paytable";
 import WinLineIndicator from "../components/winLineIndicator";
+import WinIndicator from "../components/winIndicator";
 
 export default class View extends PIXI.Container{
     constructor(app, model) {
@@ -12,6 +13,7 @@ export default class View extends PIXI.Container{
         this._app = app;
         this._model = model;
 
+        this._isSpinning = false;
         this.setup();
     }
 
@@ -19,6 +21,7 @@ export default class View extends PIXI.Container{
         this.createBackground();
         this.createReels();
         this.createWinLine();
+        this.createWinIndicator();
         this.createSpinButton();
         this.createBalanceMeter();
         this.createPaytable();
@@ -60,13 +63,19 @@ export default class View extends PIXI.Container{
         this.addChild(this._winLine);
     }
 
+    createWinIndicator(){
+        this._winIndicator = new WinIndicator();
+        this._winIndicator.updateWinText(0);
+        this.addChild(this._winIndicator);
+    }
+
     createSpinButton(){
         let texture = PIXI.loader.resources["atlas"].textures["spinButton.png"];
         this._machineButton = new MachineButton(texture);
         this._machineButton.interactive = true;
         this._machineButton.buttonMode = true;
         this._machineButton.on('pointerdown', (function(){
-            this.onMachineButtonTapped();
+            this.onMachineButtonTapped(this._isSpinning);
         }).bind(this));
 
         this.addChild(this._machineButton);
@@ -83,15 +92,23 @@ export default class View extends PIXI.Container{
     }
 
     spin(combination, reward){
+        this._isSpinning = true;
         this._reelsStopped = 0;
 
-        this._machineButton.disable();
-        this._machineButton.interactive = false;
+        this._winIndicator.updateWinText(0);
+
+        this._machineButton.changeToStopButton();
 
         this._currentReward = reward;
 
         for (let i = 0; i < this._reels.length; i++){
             this._reels[i].spin(combination.reelPositions[i]);
+        }
+    }
+
+    instantStop(){
+        for (let i = 0; i < this._reels.length; i++){
+            this._reels[i].instantStop();
         }
     }
 
@@ -110,6 +127,7 @@ export default class View extends PIXI.Container{
         if (this._reelsStopped === this._model.REEL_AMOUNT){
             if (this._currentReward > 0)
                 this._winLine.show();
+            this._isSpinning = false;
             this.onAllReelsComplete();
         }
     }
@@ -161,6 +179,10 @@ export default class View extends PIXI.Container{
             this._paytable.scale.set(1, 1);
             this._paytable.position.set(0, this._reelWrapper.position.y - this._reelWrapper.height * 0.5 - this._paytable.height - 20);
         }
+
+        if (this._winIndicator){
+            this._winIndicator.position.set(0, this._balanceMeter.position.y + 70);
+        }
     }
 
     applyLayoutLandscape(){
@@ -182,12 +204,16 @@ export default class View extends PIXI.Container{
 
         if (this._paytable){
             this._paytable.position.x = (this._app.screen.width * 0.5 - this._paytable.width * 0.5) / this.scale.y - 30;
-            this._paytable.position.y = -this._app.screen.height * 0.5 / this.scale.y + this._paytable.height * 0.5 + 50;
+            this._paytable.position.y = -this._reelWrapper.position.y - this._paytable.height * 0.5;
         }
 
         if (this._winLine){
             this._winLine.scale.set(this._reelWrapper.scale.x, this._reelWrapper.scale.y);
             this._winLine.position.set(this._reelWrapper.position.x, this._reelWrapper.position.y);
+        }
+
+        if (this._winIndicator){
+            this._winIndicator.position.set(this._paytable.position.x, this._reelWrapper.position.y + 70);
         }
     }
 
