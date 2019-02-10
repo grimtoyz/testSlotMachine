@@ -1,4 +1,6 @@
 import * as PIXI from "pixi.js";
+import { TweenMax } from "gsap";
+import PixiPlugin from "gsap/PixiPlugin";
 
 export default class Reel extends PIXI.Container{
     constructor(model){
@@ -40,6 +42,10 @@ export default class Reel extends PIXI.Container{
         // this._background.anchor.set(0.5, 0.5);
         //
         // this.addChild(this._background);
+    }
+
+    spin(){
+        TweenMax.to(this._background, 10, { rotation: 60 * Math.PI / 180 });
     }
 
     get MARGIN(){

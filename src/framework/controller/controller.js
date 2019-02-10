@@ -11,6 +11,8 @@ export default class Controller {
     setup(){
         this.createModel();
         this.createView();
+
+        this._view.updateBalance(this._model.balance);
     }
 
     createModel(){

@@ -5,28 +5,6 @@ export function initGame() {
     let { width, height } = getScreenSize();
 
     startGame(width, height);
-
-    // let onLoadFiles = () => {
-    //     loadCustomFont(() => {
-    //         let { width, height } = getScreenSize();
-    //         startGame(width, height)
-    //     })
-    // };
-}
-
-
-function loadCustomFont(onComplete) {
-    if (GlobalData.fonts.length > 0) {
-        WebFont.load({
-            custom: { families: GlobalData.fonts },
-            active: function() {
-                // console.log('--> load fonts');
-                onComplete()
-            }
-        })
-    } else {
-        onComplete()
-    }
 }
 
 export function getScreenSize() {

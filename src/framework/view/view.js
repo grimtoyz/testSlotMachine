@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import Reel from "../components/reel";
 import MachineButton from "../components/machineButton";
+import BalanceMeter from "../components/balanceMeter";
 
 export default class View extends PIXI.Container{
     constructor(app, model) {
@@ -16,6 +17,7 @@ export default class View extends PIXI.Container{
         this.createBackground();
         this.createReels();
         this.createSpinButton();
+        this.createBalanceMeter();
     }
 
     createBackground(){
@@ -46,9 +48,16 @@ export default class View extends PIXI.Container{
     createSpinButton(){
         let texture = PIXI.loader.resources["atlas"].textures["spinButton.png"];
         this._machineButton = new MachineButton(texture);
+        this._machineButton.interactive = true;
+        this._machineButton.buttonMode = true;
         this._machineButton.on('pointerdown', this.onMachineButtonTapped);
 
         this.addChild(this._machineButton);
+    }
+
+    createBalanceMeter(){
+        this._balanceMeter = new BalanceMeter(this._app);
+        this.addChild(this._balanceMeter);
     }
 
     onMachineButtonTapped(){
@@ -67,6 +76,11 @@ export default class View extends PIXI.Container{
             this._machineButton.position.x = 0;
             this._machineButton.position.y = this._app.screen.height * 0.5 / this.scale.y - this._machineButton.height - 30;
         }
+
+        if (this._balanceMeter){
+            this._balanceMeter.position.x = 0;
+            this._balanceMeter.position.y = -this._app.screen.height * 0.5 / this.scale.y + this._balanceMeter.height * 0.5 + 200;
+        }
     }
 
     applyLayoutLandscape(){
@@ -81,6 +95,15 @@ export default class View extends PIXI.Container{
             this._machineButton.position.x = this._app.screen.width * 0.5 / this.scale.x - this._machineButton.width * 0.5 - 30;
             this._machineButton.position.y = this._app.screen.height * 0.5 / this.scale.y - this._machineButton.height * 0.5 - 30;
         }
+
+        if (this._balanceMeter){
+            this._balanceMeter.position.x = this._reelWrapper.position.x;
+            this._balanceMeter.position.y = -this._app.screen.height * 0.5 / this.scale.y + this._balanceMeter.height * 0.5 + 20;
+        }
+    }
+
+    updateBalance(value){
+        this._balanceMeter.updateBalance(value);
     }
 
     get REEL_AMOUNT(){
