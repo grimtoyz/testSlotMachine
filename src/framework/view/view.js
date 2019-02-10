@@ -33,13 +33,16 @@ export default class View extends PIXI.Container{
         this._reelWrapper = new PIXI.Container();
         this._reels = [];
 
-        let totalWidth = this._model.SYMBOL_WIDTH * this.REEL_AMOUNT + this.REEL_GAP_X * (this.REEL_AMOUNT - 1);
+        let totalWidth = this._model.SYMBOL_WIDTH * this._model.REEL_AMOUNT + this._model.REEL_GAP * (this._model.REEL_AMOUNT - 1);
         let firstReelOffset = -totalWidth * 0.5 + this._model.SYMBOL_WIDTH * 0.5;
 
-        for (let i = 0; i < this.REEL_AMOUNT; i++){
+        for (let i = 0; i < this._model.REEL_AMOUNT; i++){
             let reel = new Reel(this._model, i);
+            reel.onSpinComplete((function (i) {
+                this.onReelSpinComplete(i);
+            }).bind(this));
 
-            reel.position.x = firstReelOffset + i * this.REEL_GAP_X + i * this._model.SYMBOL_WIDTH;
+            reel.position.x = firstReelOffset + i * this._model.REEL_GAP + i * this._model.SYMBOL_WIDTH;
 
             this._reelWrapper.addChild(reel);
             this._reels.push(reel);
@@ -53,7 +56,9 @@ export default class View extends PIXI.Container{
         this._machineButton = new MachineButton(texture);
         this._machineButton.interactive = true;
         this._machineButton.buttonMode = true;
-        this._machineButton.on('pointerdown', this.onMachineButtonTapped);
+        this._machineButton.on('pointerdown', (function(){
+            this.onMachineButtonTapped();
+        }).bind(this));
 
         this.addChild(this._machineButton);
     }
@@ -63,8 +68,37 @@ export default class View extends PIXI.Container{
         this.addChild(this._balanceMeter);
     }
 
-    onMachineButtonTapped(){
-        console.log('tap');
+    spin(combination){
+        this._reelsStopped = 0;
+
+        this._machineButton.disable();
+        this._machineButton.interactive = false;
+
+
+
+        for (let i = 0; i < this._reels.length; i++){
+            this._reels[i].spin(combination.reelPositions[i]);
+        }
+    }
+
+    enableControls(){
+        this._machineButton.interactive = true;
+        this._machineButton.enable();
+    }
+
+    onMachineButtonTapped(callback){
+        this.onMachineButtonTapped = callback;
+    }
+
+    onReelSpinComplete(reelIndex){
+        this._reelsStopped ++;
+
+        if (this._reelsStopped === this._model.REEL_AMOUNT)
+            this.onAllReelsComplete();
+    }
+
+    onAllReelsComplete(callback){
+        this.onAllReelsComplete = callback;
     }
 
     update(delta){
@@ -116,13 +150,5 @@ export default class View extends PIXI.Container{
 
     updateBalance(value){
         this._balanceMeter.updateBalance(value);
-    }
-
-    get REEL_AMOUNT(){
-        return 5;
-    }
-
-    get REEL_GAP_X(){
-        return 10;
     }
 }
