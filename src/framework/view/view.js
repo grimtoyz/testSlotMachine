@@ -31,15 +31,18 @@ export default class View extends PIXI.Container{
 
     createReels(){
         this._reelWrapper = new PIXI.Container();
+        this._reels = [];
+
+        let totalWidth = this._model.SYMBOL_WIDTH * this.REEL_AMOUNT + this.REEL_GAP_X * (this.REEL_AMOUNT - 1);
+        let firstReelOffset = -totalWidth * 0.5 + this._model.SYMBOL_WIDTH * 0.5;
 
         for (let i = 0; i < this.REEL_AMOUNT; i++){
-            let reel = new Reel(this._model);
+            let reel = new Reel(this._model, i);
 
-            let totalWidth = reel.REEL_WIDTH * this.REEL_AMOUNT + this.REEL_GAP_X * (this.REEL_AMOUNT - 1);
-            let firstReelOffset = -totalWidth * 0.5 + reel.REEL_WIDTH * 0.5;
-            reel.position.x = firstReelOffset + i * this.REEL_GAP_X + i * reel.REEL_WIDTH;
+            reel.position.x = firstReelOffset + i * this.REEL_GAP_X + i * this._model.SYMBOL_WIDTH;
 
             this._reelWrapper.addChild(reel);
+            this._reels.push(reel);
         }
 
         this.addChild(this._reelWrapper);
@@ -62,6 +65,15 @@ export default class View extends PIXI.Container{
 
     onMachineButtonTapped(){
         console.log('tap');
+    }
+
+    update(delta){
+        if (this._reels){
+            for (let i = 0; i < this._reels.length; i++){
+                this._reels[i].update(delta);
+            }
+        }
+
     }
 
     applyLayoutPortrait(){

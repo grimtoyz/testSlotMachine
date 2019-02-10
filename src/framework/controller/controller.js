@@ -37,6 +37,11 @@ export default class Controller {
         this._view.position.y = this._app.screen.height * 0.5;
     }
 
+    update(delta){
+        if (this._view)
+            this._view.update(delta);
+    }
+
     applyLayoutPortrait(){
         if (this._view)
             this._view.applyLayoutPortrait();

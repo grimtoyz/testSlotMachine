@@ -1,10 +1,29 @@
 export default class Model {
     constructor(){
         this._balance = 5000;
+        this._reels = [
+            [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3],
+            [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3],
+            [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3],
+            [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3],
+            [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3],
+        ]
+    }
+
+    get reels() {
+        return this._reels;
     }
 
     get ROWS_AMOUNT(){
         return 3;
+    }
+
+    get SYMBOL_WIDTH(){
+        return 160;
+    }
+
+    get SYMBOL_HEIGHT(){
+        return 200;
     }
 
     get balance() {

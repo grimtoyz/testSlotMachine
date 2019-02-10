@@ -44,8 +44,14 @@ export function startGame(deviceWidth, deviceHeight) {
 
     function onAssetsLoaded(){
         app.controller = new Controller(app);
+        app.ticker.add(delta => update(delta));
 
         resize();
+    }
+
+    function update(delta){
+        if (app.controller)
+            app.controller.update(delta);
     }
 }
 
