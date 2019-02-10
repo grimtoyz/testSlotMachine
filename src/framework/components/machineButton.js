@@ -7,7 +7,7 @@ export default class MachineButton extends PIXI.Sprite{
         this.anchor.set(0.5, 0.5);
     }
 
-    enable(){
+    changeToSpinButton(){
         this.texture = PIXI.loader.resources["atlas"].textures["spinButton.png"];
     }
 

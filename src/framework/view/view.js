@@ -92,6 +92,8 @@ export default class View extends PIXI.Container{
     }
 
     spin(combination, reward){
+        this._winLine.hide();
+
         this._isSpinning = true;
         this._reelsStopped = 0;
 
@@ -112,9 +114,8 @@ export default class View extends PIXI.Container{
         }
     }
 
-    enableControls(){
-        this._machineButton.interactive = true;
-        this._machineButton.enable();
+    showSpinButton(){
+        this._machineButton.changeToSpinButton();
     }
 
     onMachineButtonTapped(callback){
@@ -125,8 +126,11 @@ export default class View extends PIXI.Container{
         this._reelsStopped ++;
 
         if (this._reelsStopped === this._model.REEL_AMOUNT){
-            if (this._currentReward > 0)
+            console.log("all reels stopped");
+            if (this._currentReward > 0){
                 this._winLine.show();
+                this._winIndicator.updateWinText(this._currentReward);
+            }
             this._isSpinning = false;
             this.onAllReelsComplete();
         }

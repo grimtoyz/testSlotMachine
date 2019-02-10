@@ -74,12 +74,14 @@ export default class Controller {
 
     onSpinCombinationReceived(combination){
         // reward might be send from server as well, then it would be handled via corresponding classes
-        let reward = this._rewardCalculator.calculateReward(combination);
-        this._view.spin(combination, reward);
+        this._currentReward = this._rewardCalculator.calculateReward(combination);
+        this._view.spin(combination, this._currentReward);
     }
 
     onAllReelsComplete(){
-        this._view.enableControls();
+        this._view.showSpinButton();
+        this._model.balance += this._currentReward;
+        this._view.updateBalance(this._model.balance);
     }
 
     update(delta){
