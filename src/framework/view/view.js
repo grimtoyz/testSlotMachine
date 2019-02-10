@@ -78,7 +78,7 @@ export default class View extends PIXI.Container{
     }
 
     createPaytable(){
-        this._paytable = new Paytable();
+        this._paytable = new Paytable(this._model);
         this.addChild(this._paytable);
     }
 
@@ -144,7 +144,7 @@ export default class View extends PIXI.Container{
 
         if (this._balanceMeter){
             this._balanceMeter.position.x = 0;
-            this._balanceMeter.position.y = -this._app.screen.height * 0.5 / this.scale.y + this._balanceMeter.height * 0.5 + 200;
+            this._balanceMeter.position.y = this._reelWrapper.position.y + this._reelWrapper.height * 0.5 + 30;
         }
 
         if (this._paytable){
@@ -156,13 +156,18 @@ export default class View extends PIXI.Container{
             this._winLine.scale.set(this._reelWrapper.scale.x, this._reelWrapper.scale.y);
             this._winLine.position.set(this._reelWrapper.position.x, this._reelWrapper.position.y);
         }
+
+        if (this._paytable){
+            this._paytable.scale.set(1, 1);
+            this._paytable.position.set(0, this._reelWrapper.position.y - this._reelWrapper.height * 0.5 - this._paytable.height - 20);
+        }
     }
 
     applyLayoutLandscape(){
         if (this._reelWrapper){
             // TODO: make responsive reels scaling
-            this._reelWrapper.scale.x = this._reelWrapper.scale.y = 0.8;
-            this._reelWrapper.position.set(-100, 0);
+            this._reelWrapper.scale.x = this._reelWrapper.scale.y = 0.6;
+            this._reelWrapper.position.set(- this._reelWrapper.width * 0.5 / this.scale.y + 50, 0);
         }
 
         if (this._machineButton){
@@ -172,12 +177,12 @@ export default class View extends PIXI.Container{
 
         if (this._balanceMeter){
             this._balanceMeter.position.x = this._reelWrapper.position.x;
-            this._balanceMeter.position.y = -this._app.screen.height * 0.5 / this.scale.y + this._balanceMeter.height * 0.5 + 20;
+            this._balanceMeter.position.y = this._reelWrapper.position.y + this._reelWrapper.height * 0.5 + 30;
         }
 
         if (this._paytable){
-            this._paytable.position.x = this._reelWrapper.position.x;
-            this._paytable.position.y = -this._app.screen.height * 0.5 / this.scale.y + this._paytable.height * 0.5 + 20;
+            this._paytable.position.x = (this._app.screen.width * 0.5 - this._paytable.width * 0.5) / this.scale.y - 30;
+            this._paytable.position.y = -this._app.screen.height * 0.5 / this.scale.y + this._paytable.height * 0.5 + 50;
         }
 
         if (this._winLine){

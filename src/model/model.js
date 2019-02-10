@@ -58,6 +58,10 @@ export default class Model {
         this._currentBet = value;
     }
 
+    get paytable() {
+        return this._paytable;
+    }
+
     get REEL_AMOUNT(){
         return 5;
     }

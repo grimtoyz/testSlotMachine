@@ -44,7 +44,7 @@ export default class WinLineIndicator extends PIXI.Container{
             this.visible = !this.visible;
             this._counter ++;
 
-            if (this._counter === 10){
+            if (this._counter >= 10){
                 this._isBlinking = false;
                 this.visible = false;
             }

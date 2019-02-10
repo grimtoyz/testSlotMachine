@@ -6,9 +6,9 @@ export default class RewardCalculator {
     calculateReward(combination){
         let reward = 0;
 
-        for (let i = 0; i < this._model._paytable.anyThree.length; i++){
+        for (let i = 0; i < this._model.paytable.anyThree.length; i++){
             // reward += this.checkAnyThree(combination, this._model._paytable.anyThree[i].index, this._model._paytable.anyThree[i].reward);
-            let anyThree = this.checkAnyThree(combination, this._model._paytable.anyThree[i].index, this._model._paytable.anyThree[i].reward);
+            let anyThree = this.checkAnyThree(combination, this._model.paytable.anyThree[i].index, this._model.paytable.anyThree[i].reward);
             // if (anyThree === 0)
             //     reward += this.checkLeftMiddle();
             // else
