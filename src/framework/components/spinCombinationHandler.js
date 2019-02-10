@@ -12,7 +12,7 @@ export default class SpinCombinationHandler {
         let reelPositions = [];
         for (let i = 0; i < this._model.REEL_AMOUNT; i++){
             let reelPosition = Util.randomInt(0, this._model.reels[0].length - 1);
-            reelPositions.push(3);
+            reelPositions.push(reelPosition);
         }
         let combination = {reelPositions:reelPositions};
         this.onCombinationReceived(combination);

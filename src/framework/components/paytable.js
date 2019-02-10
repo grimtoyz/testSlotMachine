@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import {RewardTypes} from "../startGame";
 
 export default class Paytable extends PIXI.Container{
     constructor(model){
@@ -6,40 +7,44 @@ export default class Paytable extends PIXI.Container{
 
         this._model = model;
         this.setup();
+
+        this._isBlinking = false;
+        this._timer = 0;
+        this._counter = 0;
     }
 
     setup(){
         this.createBackground();
 
-        let specialWrapper = this.createSpecialWrapper(this._model.paytable.specials[0].index, this._model.paytable.specials[0].reward);
-        specialWrapper.position.set(0, -specialWrapper.height * 0.5 - 30);
-        this.addChild(specialWrapper);
+        this._specialWrapper = this.createSpecialWrapper(this._model.paytable.specials[0].index, this._model.paytable.specials[0].reward);
+        this._specialWrapper.position.set(0, - this._specialWrapper.height * 0.5 - 30);
+        this.addChild(this._specialWrapper);
 
-        let threesWrapper = new PIXI.Container;
-        this.addChild(threesWrapper);
+        this._threesWrapper = new PIXI.Container;
+        this.addChild(this._threesWrapper);
 
         for (let i = 0; i < this._model.paytable.anyThree.length; i++){
             let index = this._model.paytable.anyThree[i].index;
             let reward = this._model.paytable.anyThree[i].reward;
             let line = this.createThree(index, reward);
             line.position.set(0, i * this.ICON_GAP_Y);
-            threesWrapper.addChild(line);
+            this._threesWrapper.addChild(line);
         }
 
-        threesWrapper.position.set(threesWrapper.width * 0.5 + 20, 0);
+        this._threesWrapper.position.set(this._threesWrapper.width * 0.5 + 20, 0);
 
-        let twosWrapper = new PIXI.Container;
-        this.addChild(twosWrapper);
+        this._twosWrapper = new PIXI.Container;
+        this.addChild(this._twosWrapper);
 
         for (let i = 0; i < this._model.paytable.anyThree.length; i++){
             let index = this._model.paytable.leftAndMiddle[i].index;
             let reward = this._model.paytable.leftAndMiddle[i].reward;
             let line = this.createTwo(index, reward);
             line.position.set(0, i * this.ICON_GAP_Y);
-            twosWrapper.addChild(line);
+            this._twosWrapper.addChild(line);
         }
 
-        twosWrapper.position.set(- twosWrapper.width * 0.5 - 20, 0);
+        this._twosWrapper.position.set(- this._twosWrapper.width * 0.5 - 20, 0);
 
         this.drawBackground();
     }
@@ -80,6 +85,10 @@ export default class Paytable extends PIXI.Container{
         let container = new PIXI.Container;
 
         for (let i = 0; i < 3; i++){
+            if (i === 2){
+                continue;
+            }
+
             let icon = new PIXI.Sprite(
                 PIXI.loader.resources["atlas"].textures[`symbol${index}.png`]
             );
@@ -114,6 +123,52 @@ export default class Paytable extends PIXI.Container{
         container.addChild(text);
 
        return (container);
+    }
+
+    blinkReward(rewardObj){
+        let type = rewardObj.type;
+        let rewardIndex = rewardObj.index;
+
+        if (type === RewardTypes.TYPE_THREE){
+            for (let i = 0; i < this._model.paytable.anyThree.length; i++){
+                if (this._model.paytable.anyThree[i].index === rewardIndex){
+                    this._currentBlinkingReward = this._threesWrapper.children[i];
+                }
+            }
+        }
+
+        if (type === RewardTypes.TYPE_LEFT_MIDDLE){
+            for (let i = 0; i < this._model.paytable.leftAndMiddle.length; i++){
+                if (this._model.paytable.leftAndMiddle[i].index === rewardIndex){
+                    this._currentBlinkingReward = this._twosWrapper.children[i];
+                }
+            }
+        }
+
+        if (type === RewardTypes.TYPE_SPECIAL)
+            this._currentBlinkingReward = this._specialWrapper;
+
+
+        this._isBlinking = true;
+    }
+
+    update(delta){
+        if (!this._isBlinking)
+            return;
+
+        if (this._timer < 10)
+            this._timer += delta;
+        else{
+            this._timer = 0;
+            this._currentBlinkingReward.visible = ! this._currentBlinkingReward.visible;
+            this._counter ++;
+
+            if (this._counter >= 15){
+                this._isBlinking = false;
+                this._currentBlinkingReward.visible = true;
+                this._counter = 0;
+            }
+        }
     }
 
     get ICON_SCALE(){

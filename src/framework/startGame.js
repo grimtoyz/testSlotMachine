@@ -2,6 +2,13 @@ import * as WebFont from "webfontloader";
 import Controller from "./controller/controller";
 import * as PIXI from 'pixi.js';
 
+export const RewardTypes = Object.freeze({
+    TYPE_NONE:   "TYPE_NONE",
+    TYPE_SPECIAL:  "TYPE_SPECIAL",
+    TYPE_THREE: "TYPE_THREE",
+    TYPE_LEFT_MIDDLE: "TYPE_LEFT_MIDDLE"
+});
+
 
 export function startGame(deviceWidth, deviceHeight) {
     let orientation = (deviceWidth > deviceHeight) ? 'landscape' : 'portrait';

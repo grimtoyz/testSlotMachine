@@ -127,9 +127,10 @@ export default class View extends PIXI.Container{
 
         if (this._reelsStopped === this._model.REEL_AMOUNT){
             console.log("all reels stopped");
-            if (this._currentReward > 0){
+            if (this._currentReward.reward > 0){
                 this._winLine.show();
-                this._winIndicator.updateWinText(this._currentReward);
+                this._winIndicator.updateWinText(this._currentReward.reward);
+                this._paytable.blinkReward(this._currentReward);
             }
             this._isSpinning = false;
             this.onAllReelsComplete();
@@ -149,6 +150,9 @@ export default class View extends PIXI.Container{
 
         if (this._winLine)
             this._winLine.update(delta);
+
+        if (this._paytable)
+            this._paytable.update(delta);
     }
 
     applyLayoutPortrait(){

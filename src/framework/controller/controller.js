@@ -80,7 +80,7 @@ export default class Controller {
 
     onAllReelsComplete(){
         this._view.showSpinButton();
-        this._model.balance += this._currentReward;
+        this._model.balance += this._currentReward.reward;
         this._view.updateBalance(this._model.balance);
     }
 
