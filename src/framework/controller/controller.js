@@ -1,6 +1,7 @@
 import View from "../view/view";
 import Model from "../../model/model";
 import SpinCombinationHandler from "../components/spinCombinationHandler";
+import RewardCalculator from "../components/rewardCalculator";
 
 export default class Controller {
     constructor(app){
@@ -13,6 +14,8 @@ export default class Controller {
         this.createModel();
         this.createSpinCombinationHandler();
         this.createView();
+
+        this._rewardCalculator = new RewardCalculator(this._model);
 
         this._view.updateBalance(this._model.balance);
     }
@@ -67,7 +70,9 @@ export default class Controller {
     }
 
     onSpinCombinationReceived(combination){
-        this._view.spin(combination);
+        // reward might be send from server as well, then it would be handled via corresponding classes
+        let reward = this._rewardCalculator.calculateReward(combination);
+        this._view.spin(combination, reward);
     }
 
     onAllReelsComplete(){

@@ -2,6 +2,8 @@ import * as PIXI from 'pixi.js';
 import Reel from "../components/reel";
 import MachineButton from "../components/machineButton";
 import BalanceMeter from "../components/balanceMeter";
+import Paytable from "../components/paytable";
+import WinLineIndicator from "../components/winLineIndicator";
 
 export default class View extends PIXI.Container{
     constructor(app, model) {
@@ -16,8 +18,10 @@ export default class View extends PIXI.Container{
     setup(){
         this.createBackground();
         this.createReels();
+        this.createWinLine();
         this.createSpinButton();
         this.createBalanceMeter();
+        this.createPaytable();
     }
 
     createBackground(){
@@ -51,6 +55,11 @@ export default class View extends PIXI.Container{
         this.addChild(this._reelWrapper);
     }
 
+    createWinLine(){
+        this._winLine = new WinLineIndicator(this._model);
+        this.addChild(this._winLine);
+    }
+
     createSpinButton(){
         let texture = PIXI.loader.resources["atlas"].textures["spinButton.png"];
         this._machineButton = new MachineButton(texture);
@@ -68,13 +77,18 @@ export default class View extends PIXI.Container{
         this.addChild(this._balanceMeter);
     }
 
-    spin(combination){
+    createPaytable(){
+        this._paytable = new Paytable();
+        this.addChild(this._paytable);
+    }
+
+    spin(combination, reward){
         this._reelsStopped = 0;
 
         this._machineButton.disable();
         this._machineButton.interactive = false;
 
-
+        this._currentReward = reward;
 
         for (let i = 0; i < this._reels.length; i++){
             this._reels[i].spin(combination.reelPositions[i]);
@@ -93,8 +107,11 @@ export default class View extends PIXI.Container{
     onReelSpinComplete(reelIndex){
         this._reelsStopped ++;
 
-        if (this._reelsStopped === this._model.REEL_AMOUNT)
+        if (this._reelsStopped === this._model.REEL_AMOUNT){
+            if (this._currentReward > 0)
+                this._winLine.show();
             this.onAllReelsComplete();
+        }
     }
 
     onAllReelsComplete(callback){
@@ -108,6 +125,8 @@ export default class View extends PIXI.Container{
             }
         }
 
+        if (this._winLine)
+            this._winLine.update(delta);
     }
 
     applyLayoutPortrait(){
@@ -127,14 +146,23 @@ export default class View extends PIXI.Container{
             this._balanceMeter.position.x = 0;
             this._balanceMeter.position.y = -this._app.screen.height * 0.5 / this.scale.y + this._balanceMeter.height * 0.5 + 200;
         }
+
+        if (this._paytable){
+            this._paytable.position.x = 0;
+            this._paytable.position.y = -this._app.screen.height * 0.5 / this.scale.y + this._paytable.height * 0.5 + 200;
+        }
+
+        if (this._winLine){
+            this._winLine.scale.set(this._reelWrapper.scale.x, this._reelWrapper.scale.y);
+            this._winLine.position.set(this._reelWrapper.position.x, this._reelWrapper.position.y);
+        }
     }
 
     applyLayoutLandscape(){
         if (this._reelWrapper){
             // TODO: make responsive reels scaling
             this._reelWrapper.scale.x = this._reelWrapper.scale.y = 0.8;
-            this._reelWrapper.position.x = -100;
-            this._reelWrapper.position.y = 0;
+            this._reelWrapper.position.set(-100, 0);
         }
 
         if (this._machineButton){
@@ -145,6 +173,16 @@ export default class View extends PIXI.Container{
         if (this._balanceMeter){
             this._balanceMeter.position.x = this._reelWrapper.position.x;
             this._balanceMeter.position.y = -this._app.screen.height * 0.5 / this.scale.y + this._balanceMeter.height * 0.5 + 20;
+        }
+
+        if (this._paytable){
+            this._paytable.position.x = this._reelWrapper.position.x;
+            this._paytable.position.y = -this._app.screen.height * 0.5 / this.scale.y + this._paytable.height * 0.5 + 20;
+        }
+
+        if (this._winLine){
+            this._winLine.scale.set(this._reelWrapper.scale.x, this._reelWrapper.scale.y);
+            this._winLine.position.set(this._reelWrapper.position.x, this._reelWrapper.position.y);
         }
     }
 

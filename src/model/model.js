@@ -10,6 +10,20 @@ export default class Model {
             [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3],
             [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3],
         ]
+
+        this._paytable = {
+            anyThree:[
+                {index:0, reward:50},
+                {index:2, reward:50},
+                {index:3, reward:50}
+                ],
+            leftAndMiddle:[
+                {index:0, reward:20},
+                {index:2, reward:20},
+                {index:3, reward:20}
+            ],
+            specials:[{index:1, reward:25}]
+        }
     }
 
     get reels() {
