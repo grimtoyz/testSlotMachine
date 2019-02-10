@@ -12,6 +12,7 @@ export default class SpinCombinationHandler {
         let reelPositions = [];
         for (let i = 0; i < this._model.REEL_AMOUNT; i++){
             let reelPosition = Util.randomInt(0, this._model.reels[0].length - 1);
+            console.log(`win combo (${i}): ${this._model.reels[i][reelPosition]}`);
             reelPositions.push(reelPosition);
         }
         let combination = {reelPositions:reelPositions};

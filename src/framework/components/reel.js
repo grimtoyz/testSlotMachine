@@ -46,10 +46,6 @@ export default class Reel extends PIXI.Container{
         this.addChild(this._symbolWrapper);
 
         for (let i = 0; i < this._model.ROWS_AMOUNT + 2; i++){
-            // let symbolModelIndex = i - 1;
-            // if (symbolModelIndex < 0)
-            //     symbolModelIndex = this._model.reels[this._index].length - 1;
-
             let symbol = new PIXI.Sprite(
                 PIXI.loader.resources["atlas"].textures[`symbol${this._model.reels[this._index][i]}.png`]
             );
@@ -69,29 +65,39 @@ export default class Reel extends PIXI.Container{
         mask.drawRect(-this._background.width * 0.5,- this._background.height * 0.5, this._background.width, this._background.height);
         mask.endFill();
 
-        this.addChild(mask);
-        // this._symbolWrapper.mask = mask;
-        this.mask = mask;
+        // this.addChild(mask);
+        // this.mask = mask;
     }
 
     spin(targetPosition){
-        targetPosition += this._model.reels[this._index].length;
+        let positionToSpinTo = this._model.reels[this._index].length - targetPosition;
+
+        while (positionToSpinTo <= this._currentPosition)
+            positionToSpinTo += this._model.reels[this._index].length;
+
+        let distanceToSpinTo = positionToSpinTo - this._currentPosition;
+
+        console.log("position to spin to =", positionToSpinTo);
 
         // TODO: make sure second roll stops reels at the correct positions
 
         this._currentTargetPosition = targetPosition;
-        this._spinTween = TweenMax.to(this, 2 + this._index, {_currentPosition:`+=${targetPosition}`, onComplete:(function(){
-                // this._currentPosition = targetPosition%(this._model.reels[this._index].length);
-                this.onSpinComplete();
-            }).bind(this), ease:Sine.easeInOut});
+        this._spinTween = TweenMax.to(this, 2 + this._index, {_currentPosition:`+=${distanceToSpinTo}`, onComplete:(function(){
+                this.spinComplete();
+        }).bind(this), ease:Sine.easeInOut});
     }
 
     instantStop(){
         this._spinTween.kill();
         this._spinTween = TweenMax.to(this, 0, {_currentPosition:`+=${ this._currentTargetPosition - this._currentPosition}`, onComplete:(function(){
-                // this._currentPosition = targetPosition%(this._model.reels[this._index].length);
-                this.onSpinComplete();
+                this.spinComplete();
             }).bind(this), ease:Sine.easeInOut});
+    }
+
+    spinComplete(){
+        // TODO: normalize current position
+
+        this.onSpinComplete();
     }
 
     onSpinComplete(callback){
@@ -115,7 +121,6 @@ export default class Reel extends PIXI.Container{
 
             // symbol transfered to top
             if(normalize && symbolPositionNormalized < symbol.position.y){
-                // console.log("reel:", this._index, "symbol:", i, symbolPositionNormalized, symbol.position.y, 'switched');
                 symbol.texture = PIXI.loader.resources["atlas"].textures[`symbol${this._model.reels[this._index][this._nextTopSymbolIndex]}.png`];
                 this._nextTopSymbolIndex --;
                 if (this._nextTopSymbolIndex < 0)

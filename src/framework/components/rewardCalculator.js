@@ -16,7 +16,7 @@ export default class RewardCalculator {
                 reward =  special;
                 type = RewardTypes.TYPE_SPECIAL;
                 index = this._model.paytable.specials[i].index;
-                return {reward, type, index};
+                return {reward:reward, type:type, index:index};
             }
         }
 
@@ -26,7 +26,7 @@ export default class RewardCalculator {
                 reward =  anyThree;
                 type = RewardTypes.TYPE_THREE;
                 index = this._model.paytable.anyThree[i].index;
-                return {reward, type, index};
+                return {reward:reward, type:type, index:index};
             }
         }
 
@@ -36,7 +36,7 @@ export default class RewardCalculator {
                 reward =  leftANdMiddle;
                 type = RewardTypes.TYPE_LEFT_MIDDLE;
                 index = this._model.paytable.leftAndMiddle[i].index;
-                return {reward, type, index};
+                return {reward:reward, type:type, index:index};
             }
         }
 
@@ -47,7 +47,7 @@ export default class RewardCalculator {
         let amount = 0;
 
         for (let i = 0; i < this._model.REEL_AMOUNT; i++){
-            if (combination.reelPositions[i] === index)
+            if (combination.reelPositions[i+2] === index)
                 amount++;
 
             if (amount >= 3)
@@ -61,7 +61,7 @@ export default class RewardCalculator {
         let amount = 0;
 
         for (let i = 0; i < this._model.REEL_AMOUNT; i++){
-            if (combination.reelPositions[i] === index && (index === 0 || index === 2))
+            if (combination.reelPositions[i+2] === index && (index === 0 || index === 2))
                 amount++;
 
             if (amount >= 2)
@@ -75,7 +75,7 @@ export default class RewardCalculator {
         let amount = 0;
 
         for (let i = 0; i < this._model.REEL_AMOUNT; i++){
-            if (combination.reelPositions[i] === index)
+            if (combination.reelPositions[i+2] === index)
                 amount++;
 
             if (amount > 0)
