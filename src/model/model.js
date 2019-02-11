@@ -1,7 +1,7 @@
 export default class Model {
     constructor(){
         this._balance = 5000;
-        this._currentBet = 10;
+        this._currentBet = 1;
 
         // TODO: import reels from config.JSON or optional random reel generation
         this._reels = [
