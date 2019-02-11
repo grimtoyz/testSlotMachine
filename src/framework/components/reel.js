@@ -65,8 +65,8 @@ export default class Reel extends PIXI.Container{
         mask.drawRect(-this._background.width * 0.5,- this._background.height * 0.5, this._background.width, this._background.height);
         mask.endFill();
 
-        // this.addChild(mask);
-        // this.mask = mask;
+        this.addChild(mask);
+        this.mask = mask;
     }
 
     spin(targetPosition){
@@ -76,6 +76,9 @@ export default class Reel extends PIXI.Container{
             positionToSpinTo += this._model.reels[this._index].length;
 
         let distanceToSpinTo = positionToSpinTo - this._currentPosition;
+
+        if (distanceToSpinTo < this._model.reels[this._index].length)
+            distanceToSpinTo += this._model.reels[this._index].length;
 
         console.log("position to spin to =", positionToSpinTo);
 

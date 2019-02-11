@@ -34,6 +34,7 @@ export default class WinLineIndicator extends PIXI.Container{
     }
 
     hide(){
+        this.visible = false;
         this._isBlinking = false;
         this._counter = 0;
         this._timer = 0;

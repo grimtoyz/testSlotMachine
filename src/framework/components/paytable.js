@@ -125,31 +125,38 @@ export default class Paytable extends PIXI.Container{
        return (container);
     }
 
-    blinkReward(rewardObj){
-        let type = rewardObj.type;
-        let rewardIndex = rewardObj.index;
+    blinkReward(rewardsObj){
+        this._currentBlinkingRewards = [];
 
-        if (type === RewardTypes.TYPE_THREE){
-            for (let i = 0; i < this._model.paytable.anyThree.length; i++){
-                if (this._model.paytable.anyThree[i].index === rewardIndex){
-                    this._currentBlinkingReward = this._threesWrapper.children[i];
+        for (let k = 0; k < rewardsObj.length; k++){
+            let rewardObj = rewardsObj[k];
+
+            let type = rewardObj.type;
+            let rewardIndex = rewardObj.index;
+
+            if (type === RewardTypes.TYPE_THREE){
+                for (let i = 0; i < this._model.paytable.anyThree.length; i++){
+                    if (this._model.paytable.anyThree[i].index === rewardIndex){
+                        this._currentBlinkingRewards.push(this._threesWrapper.children[i]);
+                    }
                 }
             }
-        }
 
-        if (type === RewardTypes.TYPE_LEFT_MIDDLE){
-            for (let i = 0; i < this._model.paytable.leftAndMiddle.length; i++){
-                if (this._model.paytable.leftAndMiddle[i].index === rewardIndex){
-                    this._currentBlinkingReward = this._twosWrapper.children[i];
+            if (type === RewardTypes.TYPE_LEFT_MIDDLE){
+                for (let i = 0; i < this._model.paytable.leftAndMiddle.length; i++){
+                    if (this._model.paytable.leftAndMiddle[i].index === rewardIndex){
+                        this._currentBlinkingRewards.push(this._twosWrapper.children[i]);
+                    }
                 }
             }
+
+            if (type === RewardTypes.TYPE_SPECIAL)
+                this._currentBlinkingRewards.push(this._specialWrapper);
+
+
+            this._isBlinking = true;
         }
 
-        if (type === RewardTypes.TYPE_SPECIAL)
-            this._currentBlinkingReward = this._specialWrapper;
-
-
-        this._isBlinking = true;
     }
 
     update(delta){
@@ -160,12 +167,20 @@ export default class Paytable extends PIXI.Container{
             this._timer += delta;
         else{
             this._timer = 0;
-            this._currentBlinkingReward.visible = ! this._currentBlinkingReward.visible;
+
+            for (let i = 0; i < this._currentBlinkingRewards.length; i++){
+                this._currentBlinkingRewards[i].visible = ! this._currentBlinkingRewards[i].visible;
+            }
+
             this._counter ++;
 
             if (this._counter >= 15){
                 this._isBlinking = false;
-                this._currentBlinkingReward.visible = true;
+
+                for (let i = 0; i < this._currentBlinkingRewards.length; i++){
+                    this._currentBlinkingRewards[i].visible = true;
+                }
+
                 this._counter = 0;
             }
         }

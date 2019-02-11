@@ -6,9 +6,11 @@ export default class RewardCalculator {
     }
 
     calculateReward(combination){
-        let reward = {reward:0, type:RewardTypes.TYPE_NONE, index:0};
+        let reward;
         let type;
         let index;
+
+        let rewards = [];
 
         for (let i = 0; i < this._model.paytable.specials.length; i++){
             let special = this.checkSpecial(combination, this._model.paytable.specials[i].index, this._model.paytable.specials[i].reward);
@@ -16,7 +18,7 @@ export default class RewardCalculator {
                 reward =  special;
                 type = RewardTypes.TYPE_SPECIAL;
                 index = this._model.paytable.specials[i].index;
-                return {reward:reward, type:type, index:index};
+                rewards.push({reward:reward, type:type, index:index});
             }
         }
 
@@ -26,28 +28,28 @@ export default class RewardCalculator {
                 reward =  anyThree;
                 type = RewardTypes.TYPE_THREE;
                 index = this._model.paytable.anyThree[i].index;
-                return {reward:reward, type:type, index:index};
+                rewards.push({reward:reward, type:type, index:index});
             }
         }
 
         for (let i = 0; i < this._model.paytable.leftAndMiddle.length; i++){
-            let leftANdMiddle = this.checkLeftAndMiddle(combination, this._model.paytable.leftAndMiddle[i].index, this._model.paytable.leftAndMiddle[i].reward);
-            if (leftANdMiddle > 0){
-                reward =  leftANdMiddle;
+            let leftAndMiddle = this.checkLeftAndMiddle(combination, this._model.paytable.leftAndMiddle[i].index, this._model.paytable.leftAndMiddle[i].reward);
+            if (leftAndMiddle > 0){
+                reward =  leftAndMiddle;
                 type = RewardTypes.TYPE_LEFT_MIDDLE;
                 index = this._model.paytable.leftAndMiddle[i].index;
-                return {reward:reward, type:type, index:index};
+                rewards.push({reward:reward, type:type, index:index});
             }
         }
 
-        return reward;
+        return rewards;
     }
 
     checkAnyThree(combination, index, reward){
         let amount = 0;
 
         for (let i = 0; i < this._model.REEL_AMOUNT; i++){
-            if (combination.reelPositions[i+2] === index)
+            if (this._model.reels[i][combination.reelPositions[i] + 2] === index)
                 amount++;
 
             if (amount >= 3)
@@ -61,7 +63,7 @@ export default class RewardCalculator {
         let amount = 0;
 
         for (let i = 0; i < this._model.REEL_AMOUNT; i++){
-            if (combination.reelPositions[i+2] === index && (index === 0 || index === 2))
+            if (this._model.reels[i][combination.reelPositions[i] + 2] === index && (i === 0 || i === 2))
                 amount++;
 
             if (amount >= 2)
@@ -75,13 +77,10 @@ export default class RewardCalculator {
         let amount = 0;
 
         for (let i = 0; i < this._model.REEL_AMOUNT; i++){
-            if (combination.reelPositions[i+2] === index)
+            if (this._model.reels[i][combination.reelPositions[i] + 2] === index)
                 amount++;
-
-            if (amount > 0)
-                return reward * amount;
         }
 
-        return 0;
+        return reward * amount;
     }
 }

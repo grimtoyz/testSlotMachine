@@ -127,9 +127,15 @@ export default class View extends PIXI.Container{
 
         if (this._reelsStopped === this._model.REEL_AMOUNT){
             console.log("all reels stopped");
-            if (this._currentReward.reward > 0){
+
+            let reward = 0
+            for (let i = 0; i < this._currentReward.length; i++){
+                reward += this._currentReward[i].reward;
+            }
+
+            if (reward > 0){
                 this._winLine.show();
-                this._winIndicator.updateWinText(this._currentReward.reward);
+                this._winIndicator.updateWinText(reward);
                 this._paytable.blinkReward(this._currentReward);
             }
             this._isSpinning = false;

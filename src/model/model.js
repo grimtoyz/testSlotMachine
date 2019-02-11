@@ -3,6 +3,7 @@ export default class Model {
         this._balance = 5000;
         this._currentBet = 10;
 
+        // TODO: import reels from config.JSON or optional random reel generation
         this._reels = [
             [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3],
             [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3],
