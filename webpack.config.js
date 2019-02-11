@@ -54,9 +54,6 @@ var pluginsList = {
         }),
         new webpack.DefinePlugin({
             PRODUCTION: JSON.stringify(true)
-        }),
-        new ZipPlugin({
-            filename: 'pa-_v1.01.1_port.zip'
         })
     ]
 

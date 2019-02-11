@@ -31,7 +31,7 @@ export function startGame(deviceWidth, deviceHeight) {
     }
 
     PIXI.loader
-        .add('atlas', '../assets/assets.json')
+        .add('atlas', './assets/assets.json')
         .load(onAssetsLoaded);
 
     function onAssetsLoaded(){
